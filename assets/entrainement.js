@@ -9,21 +9,105 @@
 
   // ---------- Réglages ----------
   function chargerReglages() {
-    var m = Memoire.lire();
-    if (m.reglages) {
-      etat.niveau = m.reglages.niveau || 2;
-      etat.ops = (m.reglages.ops && m.reglages.ops.length) ? m.reglages.ops : etat.ops;
-      etat.chrono = !!m.reglages.chrono;
-    }
+    var p = Profils.actif();
+    var r = p && p.reglages;
+    etat.niveau = (r && r.niveau) || 2;
+    etat.ops = (r && r.ops && r.ops.length) ? r.ops : ['add', 'sub', 'mul', 'div'];
+    etat.chrono = !!(r && r.chrono);
     document.querySelectorAll('input[name="op"]').forEach(function (c) { c.checked = etat.ops.indexOf(c.value) >= 0; });
     $('opt-chrono').checked = etat.chrono;
     choisirNiveau(etat.niveau);
   }
   function sauverReglages() {
-    var m = Memoire.lire();
-    m.reglages = { niveau: etat.niveau, ops: etat.ops, chrono: etat.chrono };
-    Memoire.ecrire(m);
+    Profils.modifier(function (p) { p.reglages = { niveau: etat.niveau, ops: etat.ops, chrono: etat.chrono }; });
   }
+
+  // ---------- Pseudo ----------
+  function afficherPseudo() {
+    var p = Profils.actif();
+    $('pseudo-choix').classList.toggle('cache', !!p);
+    $('pseudo-actif').classList.toggle('cache', !p);
+    $('confirmer-effacer').classList.add('cache');
+    if (p) {
+      $('pseudo-nom').textContent = p.nom;
+    } else {
+      var liste = $('pseudos-existants'); liste.innerHTML = '';
+      var noms = Profils.liste();
+      $('pseudos-zone').classList.toggle('cache', !noms.length);
+      noms.forEach(function (nom) {
+        var b = el('button', { type: 'button', class: 'btn clair', texte: nom });
+        b.addEventListener('click', function () { Profils.choisir(nom); toutRafraichir(); });
+        liste.appendChild(b);
+      });
+    }
+  }
+
+  // ---------- Mes progrès ----------
+  function serieDeJours(h) {
+    var jours = {}; h.forEach(function (s) { jours[s.date] = true; });
+    var d = new Date(), n = 0;
+    if (!jours[Dates.isoLocal(d)]) d.setDate(d.getDate() - 1);
+    while (jours[Dates.isoLocal(d)]) { n++; d.setDate(d.getDate() - 1); }
+    return n;
+  }
+  function afficherProgres() {
+    var p = Profils.actif(), bloc = $('progres');
+    var h = (p && p.historique) || [];
+    bloc.classList.toggle('cache', !p);
+    if (!p) return;
+    $('progres-titre').textContent = 'Les progrès de ' + p.nom;
+    $('progres-vide').classList.toggle('cache', h.length > 0);
+    $('progres-plein').classList.toggle('cache', h.length === 0);
+    if (!h.length) return;
+
+    var jours = {}; h.forEach(function (s) { jours[s.date] = true; });
+    var n = serieDeJours(h);
+    $('st-seances').textContent = h.length;
+    $('st-jours').textContent = Object.keys(jours).length;
+    $('st-serie').textContent = n + (n > 1 ? ' jours' : ' jour');
+
+    // 10 dernières séances
+    var graph = $('dernieres'); graph.innerHTML = '';
+    h.slice(-10).forEach(function (s) {
+      var col = el('div', { class: 'col', title: s.score + '/' + s.total + ' · niveau ' + s.niveau });
+      col.appendChild(el('span', { class: 'col-val', texte: s.score }));
+      col.appendChild(el('div', { class: 'col-zone' }, [el('div', { class: 'col-barre', style: 'height:' + Math.max(4, Math.round(100 * s.score / s.total)) + '%' })]));
+      col.appendChild(el('span', { class: 'col-niv', texte: 'N' + s.niveau }));
+      graph.appendChild(col);
+    });
+    graph.setAttribute('aria-label', 'Scores des dernières séances : ' + h.slice(-10).map(function (s) { return s.score + ' sur ' + s.total; }).join(', '));
+
+    // Meilleur score par niveau
+    var meilleurs = $('meilleurs'); meilleurs.innerHTML = '';
+    for (var niv = 1; niv <= 5; niv++) {
+      var deNiv = h.filter(function (s) { return s.niveau === niv; });
+      var best = deNiv.length ? Math.max.apply(null, deNiv.map(function (s) { return s.score; })) : null;
+      meilleurs.appendChild(el('div', { class: 'tuile' + (best === 10 ? ' parfait' : '') }, [
+        el('span', { class: 'petit', texte: 'Niveau ' + niv }),
+        el('b', { texte: best === null ? '–' : best + '/10' })
+      ]));
+    }
+
+    // Réussite par opération sur les 20 dernières séances
+    var cumul = {};
+    h.slice(-20).forEach(function (s) {
+      Object.keys(s.parOp || {}).forEach(function (op) {
+        var c = cumul[op] || (cumul[op] = { justes: 0, total: 0 });
+        c.justes += s.parOp[op].justes; c.total += s.parOp[op].total;
+      });
+    });
+    var ops = $('progres-ops'); ops.innerHTML = '';
+    ['add', 'sub', 'mul', 'div'].forEach(function (op) {
+      var c = cumul[op]; if (!c) return;
+      var pct = Math.round(100 * c.justes / c.total);
+      ops.appendChild(el('div', {}, [
+        el('div', { class: 'barre-tete' }, [el('span', { texte: C.NOMS_OPS[op] }), el('span', { texte: pct + ' % de réussite' })]),
+        el('div', { class: 'barre', role: 'img', 'aria-label': pct + ' % de réussite' }, [el('div', { style: 'width:' + pct + '%' })])
+      ]));
+    });
+  }
+
+  function toutRafraichir() { afficherPseudo(); chargerReglages(); afficherProgres(); }
   function choisirNiveau(n) {
     etat.niveau = n;
     document.querySelectorAll('.niveaux button').forEach(function (b) {
@@ -89,9 +173,10 @@
     var duree = Math.round((Date.now() - etat.debut) / 1000);
 
     // Mémoire
-    var m = Memoire.lire();
-    m.historique = (m.historique || []).concat([{ date: Dates.isoLocal(new Date()), niveau: etat.niveau, ops: etat.ops, score: b.score, total: b.total, essai: etat.essai, duree: duree }]).slice(-60);
-    Memoire.ecrire(m);
+    Profils.modifier(function (p) {
+      p.historique = (p.historique || []).concat([{ date: Dates.isoLocal(new Date()), niveau: etat.niveau, ops: etat.ops, score: b.score, total: b.total, essai: etat.essai, duree: duree, parOp: b.parOp }]).slice(-200);
+    });
+    afficherProgres();
 
     $('score').innerHTML = b.score + '<small>/' + b.total + '</small>';
     $('essai').textContent = 'Niveau ' + etat.niveau + ' · essai ' + etat.essai + ' sur ' + MAX_ESSAIS + (etat.chrono ? ' · ' + Math.floor(duree / 60) + ' min ' + String(duree % 60).padStart(2, '0') + ' s' : '');
@@ -167,7 +252,20 @@
 
   // ---------- Démarrage ----------
   document.addEventListener('DOMContentLoaded', function () {
-    chargerReglages();
+    toutRafraichir();
+    $('form-pseudo').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var nom = $('pseudo').value.trim();
+      if (!Profils.valide(nom)) { $('pseudo-alerte').textContent = 'Entre 2 et 20 caractères : lettres, chiffres, espace, tiret.'; return; }
+      $('pseudo-alerte').textContent = '';
+      $('pseudo').value = '';
+      Profils.choisir(nom);
+      toutRafraichir();
+    });
+    $('changer-pseudo').addEventListener('click', function () { Profils.quitter(); toutRafraichir(); });
+    $('effacer-pseudo').addEventListener('click', function () { $('confirmer-effacer').classList.remove('cache'); });
+    $('effacer-non').addEventListener('click', function () { $('confirmer-effacer').classList.add('cache'); });
+    $('effacer-oui').addEventListener('click', function () { var p = Profils.actif(); if (p) Profils.supprimer(p.nom); toutRafraichir(); });
     document.querySelectorAll('.niveaux button').forEach(function (b) {
       b.addEventListener('click', function () { choisirNiveau(+b.dataset.niveau); sauverReglages(); });
     });
@@ -175,6 +273,7 @@
       e.preventDefault();
       etat.ops = Array.prototype.map.call(document.querySelectorAll('input[name="op"]:checked'), function (c) { return c.value; });
       etat.chrono = $('opt-chrono').checked;
+      if (!Profils.actif()) { $('alerte').textContent = 'Choisis d’abord ton pseudo, tout en haut.'; $('pseudo').focus(); return; }
       if (!etat.ops.length) { $('alerte').textContent = 'Choisis au moins une opération.'; return; }
       $('alerte').textContent = '';
       sauverReglages();
@@ -187,5 +286,6 @@
     $('nouvelle').addEventListener('click', function () { etat.essai = 1; commencer(C.serie(etat.niveau, etat.ops)); });
     $('monter').addEventListener('click', function () { choisirNiveau(Math.min(5, etat.niveau + 1)); sauverReglages(); etat.essai = 1; commencer(C.serie(etat.niveau, etat.ops)); });
     $('changer').addEventListener('click', function () { montrer('reglages'); });
+    $('voir-progres').addEventListener('click', function () { montrer('reglages'); setTimeout(function () { $('progres').scrollIntoView({ behavior: 'smooth' }); }, 50); });
   });
 })();

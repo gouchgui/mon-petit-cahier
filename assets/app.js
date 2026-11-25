@@ -13,6 +13,39 @@
     }
   };
 
+  // ---------- Pseudos (plusieurs élèves peuvent partager un appareil) ----------
+  function cle(p) { return String(p).trim().toLowerCase(); }
+  window.Profils = {
+    valide: function (p) { return /^[A-Za-zÀ-ÿ0-9 _-]{2,20}$/.test(String(p).trim()); },
+    liste: function () {
+      var m = Memoire.lire(), pr = m.profils || {};
+      return Object.keys(pr).map(function (k) { return pr[k].nom; }).sort(function (a, b) { return a.localeCompare(b, 'fr'); });
+    },
+    actif: function () {
+      var m = Memoire.lire();
+      return (m.actif && m.profils && m.profils[m.actif]) ? m.profils[m.actif] : null;
+    },
+    choisir: function (nom) {
+      var m = Memoire.lire(); m.profils = m.profils || {};
+      var k = cle(nom);
+      if (!m.profils[k]) m.profils[k] = { nom: String(nom).trim(), cree: isoLocal(new Date()), historique: [], reglages: null };
+      m.actif = k; Memoire.ecrire(m);
+      return m.profils[k];
+    },
+    quitter: function () { var m = Memoire.lire(); m.actif = null; Memoire.ecrire(m); },
+    supprimer: function (nom) {
+      var m = Memoire.lire(), k = cle(nom);
+      if (m.profils) delete m.profils[k];
+      if (m.actif === k) m.actif = null;
+      Memoire.ecrire(m);
+    },
+    modifier: function (fn) {
+      var m = Memoire.lire();
+      if (!m.actif || !m.profils || !m.profils[m.actif]) return;
+      fn(m.profils[m.actif]); Memoire.ecrire(m);
+    }
+  };
+
   // ---------- Dates ----------
   var JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
   var MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
@@ -90,10 +123,14 @@
   function afficherDerniere() {
     var bloc = document.getElementById('derniere');
     if (!bloc) return;
-    var m = Memoire.lire();
-    if (!m.historique || !m.historique.length) return;
-    var d = m.historique[m.historique.length - 1];
-    bloc.textContent = 'Ta dernière séance : ' + d.score + '/' + d.total + ' au niveau ' + d.niveau + '. On continue ?';
+    var p = Profils.actif();
+    if (!p) return;
+    var h = p.historique || [];
+    if (!h.length) { bloc.textContent = 'Bonjour ' + p.nom + ' ! Prêt pour ta première séance ?'; }
+    else {
+      var d = h[h.length - 1];
+      bloc.textContent = 'Bonjour ' + p.nom + ' ! Ta dernière séance : ' + d.score + '/' + d.total + ' au niveau ' + d.niveau + '. On continue ?';
+    }
     bloc.classList.remove('cache');
   }
 

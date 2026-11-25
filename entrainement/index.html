@@ -21,7 +21,35 @@
 </header>
 <main id="contenu">
 <div class="wrap">
-<section id="reglages">
+<section id="reglages" style="display:flex;flex-direction:column;gap:20px">
+  <div class="carte pseudo-carte">
+    <div id="pseudo-choix">
+      <form id="form-pseudo" style="display:flex;flex-direction:column;gap:12px">
+        <label for="pseudo" class="titre" style="font-size:32px">Qui es-tu ?</label>
+        <p class="petit">Choisis un pseudo, pas ton vrai nom. Il sert à retrouver tes progrès sur cet appareil.</p>
+        <div class="actions">
+          <input id="pseudo" type="text" maxlength="20" autocomplete="off" placeholder="Ton pseudo" class="champ">
+          <button class="btn" type="submit">C’est moi</button>
+        </div>
+        <p class="alerte" id="pseudo-alerte" role="alert"></p>
+      </form>
+      <div id="pseudos-zone" class="cache" style="display:flex;flex-direction:column;gap:10px;margin-top:6px">
+        <p class="label" style="margin:0">Déjà venu sur cet appareil ? Choisis ton pseudo :</p>
+        <div class="actions" id="pseudos-existants"></div>
+      </div>
+    </div>
+    <div id="pseudo-actif" class="cache" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px">
+      <p class="titre" style="font-size:32px">Bonjour <span id="pseudo-nom"></span> !</p>
+      <div class="actions">
+        <button class="btn clair" type="button" id="changer-pseudo">Ce n’est pas moi</button>
+        <button class="btn clair" type="button" id="effacer-pseudo">Effacer mon pseudo</button>
+      </div>
+      <div id="confirmer-effacer" class="cache mot" style="flex-basis:100%">
+        <p><b>Effacer ce pseudo et tous ses scores ?</b> On ne pourra pas les retrouver.</p>
+        <div class="actions"><button class="btn" type="button" id="effacer-oui">Oui, effacer</button><button class="btn clair" type="button" id="effacer-non">Non, garder</button></div>
+      </div>
+    </div>
+  </div>
   <div class="rang">
     <form id="form-reglages" class="carte" style="display:flex;flex-direction:column;gap:24px">
       <h1 style="font-size:52px">Ma séance</h1>
@@ -45,9 +73,34 @@
       <p><b>2.</b> Fais les 10 calculs de tête. Tu peux écrire une virgule : 4,5.</p>
       <p><b>3.</b> Ton cahier corrige, repère tes erreurs et t’explique comment faire.</p>
       <p><b>4.</b> Il te prépare une nouvelle série avec les mêmes difficultés. Tu as 3 essais.</p>
-      <p class="petit">Tes résultats restent sur cet appareil. Personne d’autre ne les voit.</p>
+      <p class="petit">Tes résultats restent sur cet appareil. Personne d’autre ne les voit, même pas ton professeur.</p>
     </div>
   </div>
+  <section id="progres" class="carte cache" aria-labelledby="progres-titre" style="display:flex;flex-direction:column;gap:22px">
+    <h2 id="progres-titre" style="font-size:40px">Mes progrès</h2>
+    <p id="progres-vide" class="petit">Fais ta première séance : tes progrès apparaîtront ici.</p>
+    <div id="progres-plein" style="display:flex;flex-direction:column;gap:24px">
+      <div class="tuiles">
+        <div class="tuile"><span class="petit">Séances faites</span><b id="st-seances"></b></div>
+        <div class="tuile"><span class="petit">Jours d’entraînement</span><b id="st-jours"></b></div>
+        <div class="tuile"><span class="petit">Jours d’affilée</span><b id="st-serie"></b></div>
+      </div>
+      <div class="rang">
+        <div>
+          <p class="label">Mes 10 dernières séances</p>
+          <div class="graph" id="dernieres" role="img"></div>
+        </div>
+        <div>
+          <p class="label">Réussite par opération</p>
+          <div class="barres" id="progres-ops"></div>
+        </div>
+      </div>
+      <div>
+        <p class="label">Mon meilleur score à chaque niveau</p>
+        <div class="tuiles cinq" id="meilleurs"></div>
+      </div>
+    </div>
+  </section>
 </section>
 
 <section id="jeu" class="cache carte">
@@ -87,6 +140,7 @@
       <div class="actions">
         <button class="btn clair" type="button" id="nouvelle">Nouvelle série</button>
         <button class="btn clair" type="button" id="changer">Changer mes réglages</button>
+        <button class="btn clair" type="button" id="voir-progres">Voir mes progrès</button>
       </div>
     </div>
   </div>
