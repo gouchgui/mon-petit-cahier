@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ma séance · Mon petit cahier</title>
+<meta name="description" content="Dix calculs de tête à ton niveau, avec correction et conseils.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34 34'%3E%3Crect x='5' y='3' width='24' height='28' rx='5' fill='%23E6E1F5'/%3E%3Cpath d='M11 11h12M11 17h12M11 23h7' stroke='%234A3F7A' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<a class="skip" href="#contenu">Aller au contenu</a>
+<header class="entete">
+  <div class="entete-in">
+    <a class="logo" href="../index.html"><svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#E6E1F5"></rect><path d="M11 11h12M11 17h12M11 23h7" stroke="#4A3F7A" stroke-width="2.4" stroke-linecap="round"></path></svg>Mon petit cahier</a>
+    <nav class="nav" aria-label="Navigation principale"><a href="../entrainement/index.html" aria-current="page">Ma séance</a><a href="../bases/index.html">Revoir les bases</a><a href="../videos/index.html">Le petit plus du jour</a></nav>
+  </div>
+</header>
+<main id="contenu">
+<div class="wrap">
+<section id="reglages">
+  <div class="rang">
+    <form id="form-reglages" class="carte" style="display:flex;flex-direction:column;gap:24px">
+      <h1 style="font-size:52px">Ma séance</h1>
+      <div>
+        <p class="label" id="l-niveau">Mon niveau</p>
+        <div class="niveaux" role="group" aria-labelledby="l-niveau"><button type="button" data-niveau="1" aria-pressed="false" aria-label="Niveau 1" style="height:30%"><span>1</span></button><button type="button" data-niveau="2" aria-pressed="false" aria-label="Niveau 2" style="height:47%"><span>2</span></button><button type="button" data-niveau="3" aria-pressed="false" aria-label="Niveau 3" style="height:64%"><span>3</span></button><button type="button" data-niveau="4" aria-pressed="false" aria-label="Niveau 4" style="height:82%"><span>4</span></button><button type="button" data-niveau="5" aria-pressed="false" aria-label="Niveau 5" style="height:100%"><span>5</span></button></div>
+        <p class="niv-desc" id="niv-desc"></p>
+        <p class="petit" id="niv-detail"></p>
+      </div>
+      <fieldset style="border:0;padding:0;margin:0">
+        <legend class="label">Je m’entraîne sur</legend>
+        <div class="ops"><label><input type="checkbox" name="op" value="add" checked> Additions</label><label><input type="checkbox" name="op" value="sub" checked> Soustractions</label><label><input type="checkbox" name="op" value="mul" checked> Multiplications</label><label><input type="checkbox" name="op" value="div" checked> Divisions</label></div>
+      </fieldset>
+      <label class="case"><input type="checkbox" id="opt-chrono"> Avec un chrono (facultatif)</label>
+      <p class="alerte" id="alerte" role="alert"></p>
+      <div class="actions"><button class="btn" type="submit">C’est parti pour 10 calculs</button></div>
+    </form>
+    <div class="carte" style="display:flex;flex-direction:column;gap:14px">
+      <h2 style="font-size:36px">Comment ça marche ?</h2>
+      <p><b>1.</b> Choisis ton niveau et tes opérations.</p>
+      <p><b>2.</b> Fais les 10 calculs de tête. Tu peux écrire une virgule : 4,5.</p>
+      <p><b>3.</b> Ton cahier corrige, repère tes erreurs et t’explique comment faire.</p>
+      <p><b>4.</b> Il te prépare une nouvelle série avec les mêmes difficultés. Tu as 3 essais.</p>
+      <p class="petit">Tes résultats restent sur cet appareil. Personne d’autre ne les voit.</p>
+    </div>
+  </div>
+</section>
+
+<section id="jeu" class="cache carte">
+  <div class="jeu">
+    <p class="surtitre" id="numero"></p>
+    <div class="points" id="points" aria-hidden="true"></div>
+    <p class="calcul" id="calcul" aria-live="polite"></p>
+    <form id="form-rep" class="reponse" autocomplete="off">
+      <label for="rep" class="skip">Ta réponse</label>
+      <input id="rep" type="text" inputmode="decimal" placeholder="?">
+      <button class="btn" type="submit">Valider</button>
+    </form>
+    <p class="chrono cache" id="chrono"></p>
+    <button class="btn clair" type="button" id="arreter">Arrêter la série</button>
+  </div>
+</section>
+
+<section id="bilan" class="cache">
+  <div class="rang">
+    <div class="carte" style="display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+        <h1 style="font-size:52px">Mon bilan</h1>
+        <p class="score" id="score"></p>
+      </div>
+      <p class="petit" id="essai"></p>
+      <div class="barres" id="barres"></div>
+      <details class="detail"><summary>Voir mes 10 calculs</summary><ol id="detail-liste"></ol></details>
+    </div>
+    <div class="carte" style="display:flex;flex-direction:column;gap:18px">
+      <div class="mot" id="mot" aria-live="polite"></div>
+      <p class="petit cache" id="fin-essais">Tu as fait tes 3 essais. Relis la fiche tranquillement, puis reviens faire une nouvelle série plus tard.</p>
+      <div class="actions">
+        <button class="btn" type="button" id="retenter">Je retente</button>
+        <button class="btn cache" type="button" id="monter">Essayer le niveau suivant</button>
+        <a class="btn clair" id="fiche" href="../bases/operations/index.html">Revoir la fiche</a>
+      </div>
+      <div class="actions">
+        <button class="btn clair" type="button" id="nouvelle">Nouvelle série</button>
+        <button class="btn clair" type="button" id="changer">Changer mes réglages</button>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+</main>
+<footer class="pied">
+  <div class="wrap">
+    <p>Mon petit cahier · calcul mental et révisions pour la classe.</p>
+    <p><a href="../mentions-legales/index.html">Mentions légales</a> · Tes résultats restent sur ton appareil.</p>
+  </div>
+</footer>
+<script src="../assets/app.js"></script>
+<script src="../assets/calcul.js"></script>
+<script src="../assets/entrainement.js"></script>
+</body>
+</html>

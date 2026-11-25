@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mon petit cahier · calcul mental et révisions</title>
+<meta name="description" content="Entraînement au calcul mental en 10 calculs, conseils personnalisés et fiches de révision du collège.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34 34'%3E%3Crect x='5' y='3' width='24' height='28' rx='5' fill='%23E6E1F5'/%3E%3Cpath d='M11 11h12M11 17h12M11 23h7' stroke='%234A3F7A' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip" href="#contenu">Aller au contenu</a>
+<header class="entete">
+  <div class="entete-in">
+    <a class="logo" href="index.html"><svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#E6E1F5"></rect><path d="M11 11h12M11 17h12M11 23h7" stroke="#4A3F7A" stroke-width="2.4" stroke-linecap="round"></path></svg>Mon petit cahier</a>
+    <nav class="nav" aria-label="Navigation principale"><a href="entrainement/index.html">Ma séance</a><a href="bases/index.html">Revoir les bases</a><a href="videos/index.html">Le petit plus du jour</a></nav>
+  </div>
+</header>
+<main id="contenu">
+<div class="wrap">
+<div class="pile">
+<section class="hero">
+  <div class="hero-texte">
+    <p class="surtitre" data-aujourdhui></p>
+    <h1>10 calculs,<br>à ton rythme.</h1>
+    <p class="chapo">Tu choisis ton niveau, tu fais ta série, et ton cahier t’explique ce qui a coincé. Personne d’autre ne voit tes résultats.</p>
+    <p id="derniere" class="derniere cache"></p>
+    <div class="actions"><a class="btn" href="entrainement/index.html">Commencer ma séance</a><a class="btn clair" href="bases/index.html">Revoir les bases</a></div>
+  </div>
+  <div id="video-du-jour" class="carte video">
+  <div class="video-tete"><h2 class="titre" style="font-size:26px">Le petit plus du jour</h2><span class="pastille" data-v="pastille"></span></div>
+  <p class="petit" data-v="quand"></p>
+  <div class="ecran" data-v="ecran"><span class="lecture"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l12 7-12 7z" fill="#4A3F7A"></path></svg></span></div>
+  <p style="font-weight:800" data-v="titre">Chargement…</p>
+  <p class="petit" data-v="source"></p>
+  <div class="reflexion"><p style="font-weight:800">Après la vidéo, je me demande :</p><p class="petit">Qui parle ? D’où viennent les informations ? Qu’est-ce que j’ai appris ?</p></div>
+</div>
+</section>
+<section aria-labelledby="t-bases" style="display:flex;flex-direction:column;gap:18px">
+  <h2 id="t-bases" style="font-size:52px">Revoir les bases</h2>
+  <p class="chapo">Les notions du collège, rangées en 10 chapitres. Une fiche courte, un exemple, et quelques calculs pour vérifier.</p>
+  <div class="chapitres"><a class="chap d-nombres" href="bases/operations/index.html"><span class="num">01</span><span><b>Les 4 opérations</b><br><span class="petit">Tables, division, priorités</span></span></a><a class="chap d-nombres" href="bases/decimaux-fractions/index.html"><span class="num">02</span><span><b>Décimaux et fractions</b><br><span class="petit">Virgule, × 10, fractions</span></span></a><a class="chap d-propor" href="bases/proportionnalite/index.html"><span class="num">03</span><span><b>Proportionnalité et pourcentages</b><br><span class="petit">Remises, produit en croix</span></span></a><a class="chap d-nombres" href="bases/relatifs/index.html"><span class="num">04</span><span><b>Nombres relatifs</b><br><span class="petit">Positifs et négatifs</span></span></a><a class="chap d-nombres" href="bases/puissances-racines/index.html"><span class="num">05</span><span><b>Puissances et racines</b><br><span class="petit">Carré, cube, puissances de 10</span></span></a><a class="chap d-espace" href="bases/grandeurs-mesures/index.html"><span class="num">06</span><span><b>Grandeurs et mesures</b><br><span class="petit">Conversions, durées, aires</span></span></a><a class="chap d-nombres" href="bases/calcul-litteral/index.html"><span class="num">07</span><span><b>Calcul littéral</b><br><span class="petit">Expressions, équations</span></span></a><a class="chap d-espace" href="bases/geometrie/index.html"><span class="num">08</span><span><b>Géométrie</b><br><span class="petit">Angles, Pythagore, Thalès, trigo</span></span></a><a class="chap d-donnees" href="bases/statistiques-probabilites/index.html"><span class="num">09</span><span><b>Statistiques et probabilités</b><br><span class="petit">Moyenne, médiane, chances</span></span></a><a class="chap d-propor" href="bases/fonctions-graphiques/index.html"><span class="num">10</span><span><b>Fonctions et graphiques</b><br><span class="petit">Lire un graphique, tableaux</span></span></a></div><div class="legende"><span><i style="background:var(--lavande)"></i>Nombres et calculs</span><span><i style="background:var(--sauge)"></i>Proportionnalité et fonctions</span><span><i style="background:var(--ciel)"></i>Espace, géométrie, mesures</span><span><i style="background:var(--peche)"></i>Données et probabilités</span></div>
+</section>
+</div>
+</div>
+</main>
+<footer class="pied">
+  <div class="wrap">
+    <p>Mon petit cahier · calcul mental et révisions pour la classe.</p>
+    <p><a href="mentions-legales/index.html">Mentions légales</a> · Tes résultats restent sur ton appareil.</p>
+  </div>
+</footer>
+<script src="assets/videos.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

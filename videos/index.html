@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le petit plus du jour · Mon petit cahier</title>
+<meta name="description" content="Une vidéo courte par jour sur les médias, l’écologie, le numérique et la société.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34 34'%3E%3Crect x='5' y='3' width='24' height='28' rx='5' fill='%23E6E1F5'/%3E%3Cpath d='M11 11h12M11 17h12M11 23h7' stroke='%234A3F7A' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<a class="skip" href="#contenu">Aller au contenu</a>
+<header class="entete">
+  <div class="entete-in">
+    <a class="logo" href="../index.html"><svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#E6E1F5"></rect><path d="M11 11h12M11 17h12M11 23h7" stroke="#4A3F7A" stroke-width="2.4" stroke-linecap="round"></path></svg>Mon petit cahier</a>
+    <nav class="nav" aria-label="Navigation principale"><a href="../entrainement/index.html">Ma séance</a><a href="../bases/index.html">Revoir les bases</a><a href="../videos/index.html" aria-current="page">Le petit plus du jour</a></nav>
+  </div>
+</header>
+<main id="contenu">
+<div class="wrap">
+<div class="pile">
+<section class="hero">
+  <div class="hero-texte">
+    <h1 style="font-size:64px">Le petit plus du jour</h1>
+    <p class="chapo">Chaque jour de classe, une vidéo courte pour mieux comprendre le monde : les médias, l’écologie, le numérique, la société. Toutes viennent de sources publiques ou éducatives.</p>
+  </div>
+  <div id="video-du-jour" class="carte video">
+  <div class="video-tete"><h2 class="titre" style="font-size:26px">Le petit plus du jour</h2><span class="pastille" data-v="pastille"></span></div>
+  <p class="petit" data-v="quand"></p>
+  <div class="ecran" data-v="ecran"><span class="lecture"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l12 7-12 7z" fill="#4A3F7A"></path></svg></span></div>
+  <p style="font-weight:800" data-v="titre">Chargement…</p>
+  <p class="petit" data-v="source"></p>
+  <div class="reflexion"><p style="font-weight:800">Après la vidéo, je me demande :</p><p class="petit">Qui parle ? D’où viennent les informations ? Qu’est-ce que j’ai appris ?</p></div>
+</div>
+</section>
+<section style="display:flex;flex-direction:column;gap:18px">
+  <h2 style="font-size:40px">Un thème par jour</h2>
+  <div class="semaine">
+    <div class="jour d-espace"><b>Lundi</b>Médias et information</div>
+    <div class="jour d-propor"><b>Mardi</b>Écologie</div>
+    <div class="jour d-nombres"><b>Mercredi</b>Numérique</div>
+    <div class="jour d-donnees"><b>Jeudi</b>Société</div>
+    <div class="jour d-nombres"><b>Vendredi</b>Esprit critique</div>
+  </div>
+</section>
+<section style="display:flex;flex-direction:column;gap:18px">
+  <h2 style="font-size:40px">Les vidéos déjà vues</h2>
+  <ul class="liste-videos" id="archives"></ul>
+</section>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var ul = document.getElementById('archives');
+  var liste = Videos.passees();
+  if (!liste.length) { ul.appendChild(el('li', { texte: 'Pas encore de vidéo. Reviens bientôt !' })); return; }
+  liste.forEach(function (v) {
+    var th = Videos.themeDu(v.date);
+    var info = el('div', {}, [
+      el('p', { class: 'petit', texte: Dates.joli(Dates.dateDe(v.date)) + (th ? ' · ' + th.nom : '') + (v.duree ? ' · ' + v.duree : '') }),
+      el('p', { style: 'font-weight:800', texte: v.titre }),
+      el('p', { class: 'petit', texte: 'Source : ' + v.source })
+    ]);
+    var lien = el('a', { class: 'btn clair', href: v.url, target: '_blank', rel: 'noopener', texte: 'Regarder' });
+    ul.appendChild(el('li', {}, [info, lien]));
+  });
+});
+</script>
+</div>
+</main>
+<footer class="pied">
+  <div class="wrap">
+    <p>Mon petit cahier · calcul mental et révisions pour la classe.</p>
+    <p><a href="../mentions-legales/index.html">Mentions légales</a> · Tes résultats restent sur ton appareil.</p>
+  </div>
+</footer>
+<script src="../assets/videos.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>
